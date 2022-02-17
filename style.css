@@ -2,6 +2,10 @@
   display: none;
 }
 
+p {
+  cursor: default;
+}
+
 footer {
   background-color: darkgray;
   text-align: center;
@@ -54,6 +58,15 @@ button {
   margin-right: 5px;
 }
 
+#numbers > p#clear {
+  width: 70px;
+  font-size: 20pt;
+  height: 28px;
+  padding-top: 12px;
+  padding-bottom: 10px;
+  border-radius: 10px;
+}
+
 #game {
   display: flex;
   justify-content: center;
@@ -89,7 +102,7 @@ button {
 }
 
 .selected {
-  background-color: lightblue;
+  background-color: #111;
 }
 
 .incorrect {
