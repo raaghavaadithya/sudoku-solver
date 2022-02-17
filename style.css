@@ -1,3 +1,97 @@
-body {
-    background: rgb(22, 22, 53);
+.hidden {
+  display: none;
+}
+
+footer {
+  background-color: darkgray;
+  text-align: center;
+  font-size: 14px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+header {
+  text-align: center;
+  border-bottom: 1px solid red;
+  padding-bottom: 10px;
+}
+
+body.dark {
+  background: #333333;
+  color: white;
+}
+
+a {
+  color: #000;
+}
+
+h1 {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 30pt;
+}
+
+button {
+  justify-self: center;
+}
+
+#new-game {
+  background-color: lightgray;
+  font-size: 15px;
+  border: 1px solid black;
+  border-radius: 3px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+#numbers > p {
+  display: inline-block;
+  border: 2px solid black;
+  border-radius: 20%;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  font-size: 30pt;
+  margin-top: 10px;
+  margin-right: 5px;
+}
+
+#game {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+#board {
+  padding-top: 10px;
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: flex-start;
+  width: 500px;
+  height: 500px;
+}
+.tile {
+  width: 50px;
+  height: 50px;
+  border: 2px solid black;
+  margin: 0;
+  text-align: center;
+  font-size: 30pt;
+}
+
+.right-border {
+  border-right: 4px solid black;
+}
+
+.bottom-border {
+  border-bottom: 4px solid black;
+}
+
+.selected {
+  background-color: lightblue;
+}
+
+.incorrect {
+  color: red;
 }
