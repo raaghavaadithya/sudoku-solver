@@ -2,6 +2,7 @@
 let selected_tile = null;
 let selected_num = null;
 let solutionBoard = null;
+let mode = "input";
 
 window.onload = function () {
   generateCleanBoard();
@@ -12,7 +13,7 @@ window.onload = function () {
 function generateCleanBoard() {
   cleanPrevBoard(); //first wipe out the previous board
 
-  let idCount = 1;
+  let idCount = 0;
   for (let i = 0; i < 81; i++) {
     //Create new empty tiles and add them to the board
     let temp = document.createElement("p");
@@ -20,11 +21,11 @@ function generateCleanBoard() {
     temp.id = idCount;
     temp.textContent = " ";
 
-    if ((idCount >= 19 && idCount <= 27) || (idCount >= 46 && idCount <= 54))
+    if ((idCount >= 18 && idCount <= 26) || (idCount >= 45 && idCount <= 53))
       //Adding the extra bottom border every 3rd row
       temp.classList.add("bottom-border");
 
-    if (idCount % 3 === 0 && idCount % 9 !== 0)
+    if ((idCount + 1) % 3 === 0 && (idCount + 1) % 9 !== 0)
       //Adding extra right border every 3rd column
       temp.classList.add("right-border");
 
@@ -81,16 +82,33 @@ function AddTilesFunctionality() {
 }
 
 function updateMove() {
+  let newText = selected_num.textContent;
   if (selected_num && selected_tile) {
     if (selected_num.textContent != "clear")
-      selected_tile.textContent = selected_num.textContent;
+      selected_tile.textContent = newText;
     else selected_tile.textContent = " ";
 
     setTimeout(function () {
       selected_num.classList.remove("selected");
       selected_num = null;
     }, 200);
-    //check if its valid or not later
+
+    if (mode === "solve") {
+      let row = Math.floor(selected_tile.id / 9);
+      let col = selected_tile.id % 9;
+
+      if (solutionBoard[row][col] != newText) {
+        selected_tile.classList.add("incorrect");
+        setTimeout(function () {
+          selected_tile.classList.remove("incorrect");
+          selected_tile.textContent = " ";
+        }, 200);
+      } else {
+        selected_tile.removeEventListener("click", handleTileClick);
+        selected_tile.classList.remove("selected");
+        selected_tile = null;
+      }
+    }
   }
 }
 
@@ -100,7 +118,6 @@ function handleTileClick() {
     selected_tile = null;
   } else {
     if (selected_tile) selected_tile.classList.remove("selected");
-
     this.classList.add("selected");
     selected_tile = this;
     updateMove();
@@ -120,21 +137,29 @@ function DoneClicked() {
     // if it's unsolvable, the ability to change the board will still be there to correct the input
     // if it's solvable, then all the inputs will be locked since they are correctly placed
     // They will be locked by disabling clickability
-    let tiles = qsa(".tile");
-    for (let i = 0; i < 81; i++) {
-      //Remove clickability from all the correct tiles
-      if (tiles[i].textContent != " ") {
-        tiles[i].removeEventListener("click", handleTileClick);
-      }
-    }
-    getbyID("done").classList.add("hidden");
-    getbyID("solve").classList.remove("hidden");
-    console.log("valid and solvable board");
+
+    //change mode from input to solving mode
+    ChangeModes();
   } else {
     //If the board is unsolvable
     alert("The board is invalid / unsolvable! Please enter a valid board");
     solutionBoard = null;
     //Can still alter everything
+  }
+}
+
+function ChangeModes() {
+  mode = "solve";
+
+  getbyID("done").classList.add("hidden");
+  getbyID("solve").classList.remove("hidden");
+
+  let tiles = qsa(".tile");
+  for (let i = 0; i < 81; i++) {
+    //Remove clickability from all the correct tiles
+    if (tiles[i].textContent != " ") {
+      tiles[i].removeEventListener("click", handleTileClick);
+    }
   }
 }
 

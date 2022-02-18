@@ -3,7 +3,7 @@
 }
 
 p {
-  cursor: default;
+  cursor: pointer;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
@@ -38,11 +38,12 @@ button {
   font-family: monospace, Verdana;
   font-weight: 600;
   background-color: lightgray;
-  font-size: 15px;
+  font-size: 18px;
   border: 1px solid black;
   border-radius: 3px;
   padding-top: 10px;
   padding-bottom: 10px;
+  cursor: pointer;
 }
 
 #numbers > p {
