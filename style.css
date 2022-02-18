@@ -32,15 +32,11 @@ a {
 h1 {
   font-family: monospace, Verdana;
   font-size: 30pt;
-
 }
 
 button {
   font-family: monospace, Verdana;
   font-weight: 600;
-}
-
-#new-game {
   background-color: lightgray;
   font-size: 15px;
   border: 1px solid black;
