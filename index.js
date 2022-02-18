@@ -3,6 +3,7 @@ let selected_tile = null;
 let selected_num = null;
 
 window.onload = function () {
+  generateCleanBoard();
   getbyID("new-game").addEventListener("click", generateCleanBoard); // Add functionality to the button
   AddNumbersFunctionality();
 };

@@ -4,6 +4,7 @@
 
 p {
   cursor: default;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 footer {
@@ -29,12 +30,14 @@ a {
 }
 
 h1 {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-family: monospace, Verdana;
   font-size: 30pt;
+
 }
 
 button {
-  justify-self: center;
+  font-family: monospace, Verdana;
+  font-weight: 600;
 }
 
 #new-game {
