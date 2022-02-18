@@ -153,6 +153,7 @@ function ChangeModes() {
 
   getbyID("done").classList.add("hidden");
   getbyID("solve").classList.remove("hidden");
+  getbyID("solve").addEventListener("click", SolveClicked);
 
   let tiles = qsa(".tile");
   for (let i = 0; i < 81; i++) {
@@ -253,6 +254,31 @@ function validBoard() {
     }
   }
   return true;
+}
+
+function SolveClicked() {
+  disableEverything();
+  backtrackWithVisuals();
+}
+
+function disableEverything() {
+  let tiles = qsa(".tile");
+  for (let i = 0; i < 81; i++) {
+    tiles[i].removeEventListener("click", handleTileClick);
+  }
+
+  getbyID("solve").removeEventListener("click", SolveClicked);
+}
+
+function backtrackWithVisuals() {
+  //fake function for now
+  let idx = 0;
+  tiles = qsa(".tile");
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      tiles[idx++].textContent = solutionBoard[i][j];
+    }
+  }
 }
 
 /*----------Helper functions----------*/
