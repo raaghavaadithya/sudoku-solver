@@ -6,6 +6,7 @@ let mode = "input";
 let backtrackingSteps = null;
 
 window.onload = function () {
+  //On loading the window, a new grid is generated, the buttons and the numbers get functionality
   generateCleanBoard();
   getbyID("new-game").addEventListener("click", generateCleanBoard); // Add functionality to the button
   AddNumbersFunctionality();
@@ -36,7 +37,7 @@ function generateCleanBoard() {
     idCount++;
   }
 
-  AddTilesFunctionality();
+  AddTilesFunctionality(); //enable the tiles on the board
   getbyID("done").addEventListener("click", DoneClicked);
   getbyID("solve").classList.add("hidden");
   getbyID("done").classList.remove("hidden");
@@ -47,11 +48,6 @@ function cleanPrevBoard() {
   for (let n = 0; n < tiles.length; n++) {
     //removing the old tiles
     tiles[n].remove();
-  }
-
-  for (let n = 0; n < 9; n++) {
-    //de-selecting all the number tiles
-    getbyID("numbers").children[n].classList.remove("selected");
   }
 
   if (selected_num) selected_num.classList.remove("selected");
@@ -81,11 +77,13 @@ function AddNumbersFunctionality() {
 function AddTilesFunctionality() {
   let tiles = qsa(".tile");
   for (let i = 0; i < 81; i++) {
-    tiles[i].addEventListener("click", handleTileClick);
+    tiles[i].addEventListener("click", handleTileClick); //Enabling the tiles of the board
   }
 }
 
 function updateMove() {
+  //If both a tile and a nnumber are selected at once, the tile gets updated with the new number
+  //Depending on whether its input mode or solve mode, the updation happens
   if (selected_num && selected_tile) {
     let newText = selected_num.textContent;
     if (newText != "clear") selected_tile.textContent = newText;
@@ -128,6 +126,8 @@ function handleTileClick() {
 }
 
 function DoneClicked() {
+  //On clicking the "Done "button
+
   if (selected_tile) {
     //deselect all tiles
     selected_tile.classList.remove("selected");
@@ -141,8 +141,7 @@ function DoneClicked() {
     // if it's solvable, then all the inputs will be locked since they are correctly placed
     // They will be locked by disabling clickability
 
-    //change mode from input to solving mode
-    ChangeModes();
+    ChangeModes(); //change mode from input to solving mode
   } else {
     //If the board is unsolvable
     alert("The board is invalid / unsolvable! Please enter a valid board");
@@ -183,12 +182,12 @@ function generateSolutionBoard() {
     solutionBoard = null;
     return false;
   } else {
-    let b = solveSudoku();
-    return b;
+    return solveSudoku();
   }
 }
 
 function solveSudoku() {
+  //Once input is given, the solution is generated to compare with the entered values later
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       if (solutionBoard[i][j] == " ") {
@@ -207,6 +206,7 @@ function solveSudoku() {
 }
 
 function isSafePlacement(num, row, col, board) {
+  //Checks if a number can be placed in a certain place in the grid
   for (let i = 0; i < 9; i++) {
     if (board[row][i] == num) return false;
     if (board[i][col] == num) return false;
@@ -217,13 +217,14 @@ function isSafePlacement(num, row, col, board) {
 
   for (let i = localBoxRow; i < localBoxRow + 3; i++) {
     for (let j = localBoxCol; j < localBoxCol + 3; j++) {
-      if (board[i][j] == num) return false;
+      if (board[i][j] == num) return false; //Checks the 3x3 sub-boxes
     }
   }
   return true;
 }
 
 function validBoard() {
+  //Checks if the inputted board is a valid/solvable board
   for (let i = 0; i < 9; i++) {
     let row = new Set(),
       col = new Set(),
@@ -255,6 +256,7 @@ function validBoard() {
 }
 
 async function SolveClicked() {
+  //Enable the "Solve" button
   disableEverything();
   backtrackingSteps = [];
 
@@ -277,6 +279,7 @@ async function SolveClicked() {
 }
 
 function disableEverything() {
+  //Disables all the tiles and the "Solve" button
   let tiles = qsa(".tile");
   for (let i = 0; i < 81; i++) {
     tiles[i].removeEventListener("click", handleTileClick);
@@ -286,13 +289,14 @@ function disableEverything() {
 }
 
 function backtrackWithSteps() {
+  //Stores all the steps in the backtracking process to later visualize it
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       if (solutionBoard[i][j] === " ") {
         for (let c = "1"; c <= "9"; c++) {
           if (isSafePlacement(c, i, j, solutionBoard)) {
             solutionBoard[i][j] = c;
-            backtrackingSteps.push([i * 9 + j, "correct", c]);
+            backtrackingSteps.push([i * 9 + j, "correct", c]); //Stores the id of the tile, the state its in, and its textContent
             if (backtrackWithSteps()) return true;
             else {
               solutionBoard[i][j] = " ";
@@ -308,6 +312,7 @@ function backtrackWithSteps() {
 }
 
 async function visualizeSteps() {
+  //Visualizes the whole backtracking process
   let tiles = qsa(".tile");
 
   for (let x = 0; x < backtrackingSteps.length; x++) {
@@ -323,7 +328,7 @@ async function visualizeSteps() {
     } else {
       cur_tile.classList.remove("correct");
       cur_tile.classList.add("wrong");
-      await sleep(100);
+      await sleep(50);
       cur_tile.classList.remove("wrong");
       cur_tile.textContent = " ";
     }
@@ -332,6 +337,7 @@ async function visualizeSteps() {
 }
 
 function resetBorders() {
+  //Once the visualization is done, the borders will be reset to normal
   let actual_board = qsa(".tile");
   for (let i = 0; i < 81; i++) {
     if (actual_board[i].classList.contains("correct")) {
