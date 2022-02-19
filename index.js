@@ -3,6 +3,7 @@ let selected_tile = null;
 let selected_num = null;
 let solutionBoard = null;
 let mode = "input";
+let backtrackingSteps = null;
 
 window.onload = function () {
   generateCleanBoard();
@@ -12,6 +13,8 @@ window.onload = function () {
 
 function generateCleanBoard() {
   cleanPrevBoard(); //first wipe out the previous board
+  mode = "input";
+  solutionBoard = null;
 
   let idCount = 0;
   for (let i = 0; i < 81; i++) {
@@ -51,6 +54,7 @@ function cleanPrevBoard() {
     getbyID("numbers").children[n].classList.remove("selected");
   }
 
+  if (selected_num) selected_num.classList.remove("selected");
   selected_num = null;
   selected_tile = null;
 }
@@ -82,10 +86,9 @@ function AddTilesFunctionality() {
 }
 
 function updateMove() {
-  let newText = selected_num.textContent;
   if (selected_num && selected_tile) {
-    if (selected_num.textContent != "clear")
-      selected_tile.textContent = newText;
+    let newText = selected_num.textContent;
+    if (newText != "clear") selected_tile.textContent = newText;
     else selected_tile.textContent = " ";
 
     setTimeout(function () {
@@ -98,11 +101,11 @@ function updateMove() {
       let col = selected_tile.id % 9;
 
       if (solutionBoard[row][col] != newText) {
-        selected_tile.classList.add("incorrect");
+        selected_tile.classList.add("incorrect-number");
         setTimeout(function () {
-          selected_tile.classList.remove("incorrect");
+          selected_tile.classList.remove("incorrect-number");
           selected_tile.textContent = " ";
-        }, 200);
+        }, 500);
       } else {
         selected_tile.removeEventListener("click", handleTileClick);
         selected_tile.classList.remove("selected");
@@ -176,11 +179,6 @@ function generateSolutionBoard() {
     solutionBoard.push(tempRow);
   }
 
-  // for(let x = 0; x < 9; x++) {
-  //   console.log(...solutionBoard[x]);
-  //   console.log();
-  // }
-
   if (!validBoard()) {
     solutionBoard = null;
     return false;
@@ -195,7 +193,7 @@ function solveSudoku() {
     for (let j = 0; j < 9; j++) {
       if (solutionBoard[i][j] == " ") {
         for (let c = "1"; c <= "9"; c++) {
-          if (isSafePlacement(c, i, j)) {
+          if (isSafePlacement(c, i, j, solutionBoard)) {
             solutionBoard[i][j] = c;
             if (solveSudoku()) return true;
             solutionBoard[i][j] = " ";
@@ -208,10 +206,10 @@ function solveSudoku() {
   return true;
 }
 
-function isSafePlacement(num, row, col) {
+function isSafePlacement(num, row, col, board) {
   for (let i = 0; i < 9; i++) {
-    if (solutionBoard[row][i] == num) return false;
-    if (solutionBoard[i][col] == num) return false;
+    if (board[row][i] == num) return false;
+    if (board[i][col] == num) return false;
   }
 
   let localBoxRow = row - (row % 3);
@@ -219,7 +217,7 @@ function isSafePlacement(num, row, col) {
 
   for (let i = localBoxRow; i < localBoxRow + 3; i++) {
     for (let j = localBoxCol; j < localBoxCol + 3; j++) {
-      if (solutionBoard[i][j] == num) return false;
+      if (board[i][j] == num) return false;
     }
   }
   return true;
@@ -256,9 +254,26 @@ function validBoard() {
   return true;
 }
 
-function SolveClicked() {
+async function SolveClicked() {
   disableEverything();
-  backtrackWithVisuals();
+  backtrackingSteps = [];
+
+  solutionBoard = [];
+  let tiles = qsa(".tile");
+  let idx = 0;
+  for (let p = 0; p < 9; p++) {
+    let tempRow = [];
+    for (let q = 0; q < 9; q++) {
+      tempRow.push(tiles[idx++].textContent);
+    }
+    solutionBoard.push(tempRow);
+  }
+
+  backtrackWithSteps();
+
+  await visualizeSteps();
+
+  resetBorders();
 }
 
 function disableEverything() {
@@ -270,14 +285,65 @@ function disableEverything() {
   getbyID("solve").removeEventListener("click", SolveClicked);
 }
 
-function backtrackWithVisuals() {
-  //fake function for now
-  let idx = 0;
-  tiles = qsa(".tile");
+function backtrackWithSteps() {
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
-      tiles[idx++].textContent = solutionBoard[i][j];
+      if (solutionBoard[i][j] === " ") {
+        for (let c = "1"; c <= "9"; c++) {
+          if (isSafePlacement(c, i, j, solutionBoard)) {
+            solutionBoard[i][j] = c;
+            backtrackingSteps.push([i * 9 + j, "correct", c]);
+            if (backtrackWithSteps()) return true;
+            else {
+              solutionBoard[i][j] = " ";
+              backtrackingSteps.push([i * 9 + j, "wrong", c]);
+            }
+          }
+        }
+        return false;
+      }
     }
+  }
+  return true;
+}
+
+async function visualizeSteps() {
+  let tiles = qsa(".tile");
+
+  for (let x = 0; x < backtrackingSteps.length; x++) {
+    let cur_id = backtrackingSteps[x][0];
+    let cur_state = backtrackingSteps[x][1];
+    let cur_content = backtrackingSteps[x][2];
+    let cur_tile = tiles[cur_id];
+
+    cur_tile.textContent = cur_content;
+    if (cur_state == "correct") {
+      cur_tile.classList.remove("wrong");
+      cur_tile.classList.add("correct");
+    } else {
+      cur_tile.classList.remove("correct");
+      cur_tile.classList.add("wrong");
+      await sleep(100);
+      cur_tile.classList.remove("wrong");
+      cur_tile.textContent = " ";
+    }
+    await sleep(50);
+  }
+}
+
+function resetBorders() {
+  let actual_board = qsa(".tile");
+  for (let i = 0; i < 81; i++) {
+    if (actual_board[i].classList.contains("correct")) {
+      actual_board[i].classList.remove("correct");
+    }
+    if ((i >= 18 && i <= 26) || (i >= 45 && i <= 53))
+      //Adding the extra bottom border every 3rd row
+      actual_board[i].classList.add("bottom-border");
+
+    if ((i + 1) % 3 === 0 && (i + 1) % 9 !== 0)
+      //Adding extra right border every 3rd column
+      actual_board[i].classList.add("right-border");
   }
 }
 
@@ -289,4 +355,8 @@ function getbyID(id) {
 
 function qsa(selector) {
   return document.querySelectorAll(selector);
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
