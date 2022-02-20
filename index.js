@@ -343,13 +343,6 @@ function resetBorders() {
     if (actual_board[i].classList.contains("correct")) {
       actual_board[i].classList.remove("correct");
     }
-    if ((i >= 18 && i <= 26) || (i >= 45 && i <= 53))
-      //Adding the extra bottom border every 3rd row
-      actual_board[i].classList.add("bottom-border");
-
-    if ((i + 1) % 3 === 0 && (i + 1) % 9 !== 0)
-      //Adding extra right border every 3rd column
-      actual_board[i].classList.add("right-border");
   }
 }
 
