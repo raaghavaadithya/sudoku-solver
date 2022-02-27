@@ -119,3 +119,13 @@ button {
 .wrong {
   border-color: red;
 }
+
+#slider-container {
+  margin-top: 15px;
+  font-family: monospace;
+  font-size: 20px;
+}
+
+#slider {
+  width: 200px;
+}

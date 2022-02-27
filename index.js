@@ -14,6 +14,8 @@ window.onload = function () {
 
 function generateCleanBoard() {
   cleanPrevBoard(); //first wipe out the previous board
+  getbyID("slider-container").classList.add("hidden");
+  getbyID("slider").classList.add("hidden");
   mode = "input";
   solutionBoard = null;
 
@@ -256,7 +258,9 @@ function validBoard() {
 }
 
 async function SolveClicked() {
-  //Enable the "Solve" button
+  getbyID("slider-container").classList.remove("hidden");
+  getbyID("slider").classList.remove("hidden");
+
   disableEverything();
   backtrackingSteps = [];
 
@@ -332,7 +336,9 @@ async function visualizeSteps() {
       cur_tile.classList.remove("wrong");
       cur_tile.textContent = " ";
     }
-    await sleep(50);
+
+    let waitTime = parseInt(getbyID("slider").value);
+    await sleep(waitTime);
   }
 }
 
