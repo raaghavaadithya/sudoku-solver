@@ -337,7 +337,8 @@ async function visualizeSteps() {
       cur_tile.textContent = " ";
     }
 
-    let waitTime = parseInt(getbyID("slider").value);
+    let sliderVal = parseInt(getbyID("slider").value);
+    let waitTime = 300 - sliderVal;
     await sleep(waitTime);
   }
 }
