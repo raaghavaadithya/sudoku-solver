@@ -4,8 +4,23 @@ let selected_num = null;
 let solutionBoard = null;
 let mode = "input";
 let backtrackingSteps = null;
+const numbers = new Set(["1", "2", "3", "4", "5", "6", "7", "8", "9"]);
 
 window.onload = function () {
+  window.addEventListener(
+    "keydown",
+    function (e) {
+      if (
+        ["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(
+          e.code
+        ) > -1
+      ) {
+        e.preventDefault();
+      }
+    },
+    false
+  );
+
   //On loading the window, a new grid is generated, the buttons and the numbers get functionality
   generateCleanBoard();
   getbyID("new-game").addEventListener("click", generateCleanBoard); // Add functionality to the button
@@ -40,6 +55,8 @@ function generateCleanBoard() {
   }
 
   AddTilesFunctionality(); //enable the tiles on the board
+  EnableKeyboardInput();
+  EnableArrowKeyMovement();
   getbyID("done").addEventListener("click", DoneClicked);
   getbyID("solve").classList.add("hidden");
   getbyID("done").classList.remove("hidden");
@@ -81,6 +98,68 @@ function AddTilesFunctionality() {
   for (let i = 0; i < 81; i++) {
     tiles[i].addEventListener("click", handleTileClick); //Enabling the tiles of the board
   }
+}
+
+function EnableKeyboardInput() {
+  document.addEventListener("keydown", function (event) {
+    if (selected_tile) {
+      if (numbers.has(event.key)) {
+        selected_tile.textContent = event.key;
+      }
+    }
+  });
+}
+
+function EnableArrowKeyMovement() {
+  document.addEventListener("keydown", (keyPressed) => {
+    if (selected_tile) {
+      tile_id = parseInt(selected_tile.id);
+      switch (keyPressed.key) {
+        case "ArrowRight":
+          selected_tile.classList.remove("selected");
+          if ((tile_id + 1) % 9 === 0) {
+            getbyID(tile_id - 8).classList.add("selected");
+            selected_tile = getbyID(tile_id - 8);
+          } else {
+            getbyID(tile_id + 1).classList.add("selected");
+            selected_tile = getbyID(tile_id + 1);
+          }
+          break;
+        case "ArrowLeft":
+          selected_tile.classList.remove("selected");
+          if (tile_id % 9 === 0) {
+            getbyID(tile_id + 8).classList.add("selected");
+            selected_tile = getbyID(tile_id + 8);
+          } else {
+            getbyID(tile_id - 1).classList.add("selected");
+            selected_tile = getbyID(tile_id - 1);
+          }
+          break;
+        case "ArrowUp":
+          selected_tile.classList.remove("selected");
+          if (tile_id <= 8 && tile_id >= 0) {
+            getbyID(tile_id + 72).classList.add("selected");
+            selected_tile = getbyID(tile_id + 72);
+          } else {
+            getbyID(tile_id - 9).classList.add("selected");
+            selected_tile = getbyID(tile_id - 9);
+          }
+          break;
+        case "ArrowDown":
+          selected_tile.classList.remove("selected");
+          if (tile_id >= 72 && tile_id <= 80) {
+            getbyID(tile_id - 72).classList.add("selected");
+            selected_tile = getbyID(tile_id - 72);
+          } else {
+            getbyID(tile_id + 9).classList.add("selected");
+            selected_tile = getbyID(tile_id + 9);
+          }
+          break;
+        default:
+          break;
+      }
+    }
+  });
 }
 
 function updateMove() {
