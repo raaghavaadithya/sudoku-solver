@@ -353,8 +353,10 @@ function validBoard() {
 }
 
 async function SolveClicked() {
-  selected_tile.classList.remove("selected");
-  selected_tile = null;
+  if (selected_tile) {
+    selected_tile.classList.remove("selected");
+    selected_tile = null;
+  }
   getbyID("slider-container").classList.remove("hidden");
   getbyID("slider").classList.remove("hidden");
 
