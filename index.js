@@ -106,6 +106,22 @@ function EnableKeyboardInput() {
       if (numbers.has(event.key)) {
         selected_tile.textContent = event.key;
       }
+      if (mode === "solve") {
+        let _row = Math.floor(selected_tile.id / 9);
+        let _col = selected_tile.id % 9;
+
+        if (solutionBoard[_row][_col] != selected_tile.textContent) {
+          selected_tile.classList.add("incorrect-number");
+          setTimeout(function () {
+            selected_tile.classList.remove("incorrect-number");
+            selected_tile.textContent = " ";
+          }, 500);
+        } else {
+          selected_tile.removeEventListener("click", handleTileClick);
+          selected_tile.classList.remove("selected");
+          selected_tile = null;
+        }
+      }
     }
   });
 }
@@ -163,7 +179,7 @@ function EnableArrowKeyMovement() {
 }
 
 function updateMove() {
-  //If both a tile and a nnumber are selected at once, the tile gets updated with the new number
+  //If both a tile and a number are selected at once, the tile gets updated with the new number
   //Depending on whether its input mode or solve mode, the updation happens
   if (selected_num && selected_tile) {
     let newText = selected_num.textContent;
@@ -337,6 +353,8 @@ function validBoard() {
 }
 
 async function SolveClicked() {
+  selected_tile.classList.remove("selected");
+  selected_tile = null;
   getbyID("slider-container").classList.remove("hidden");
   getbyID("slider").classList.remove("hidden");
 
