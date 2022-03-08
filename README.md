@@ -1,4 +1,7 @@
 # Sudoku Solver
+
+View app at: https://raaghavaadithya.github.io/sudoku-solver/
+
 This is an app that lets us play the classic game Sudoku, but can also solve it automatically while showing us how it solves the puzzle. The main feature of this app is that it visually shows the backtracking algorithm working.
 
 ## How it works / How to play
@@ -12,5 +15,3 @@ This is an app that lets us play the classic game Sudoku, but can also solve it 
 * The app uses the Backtracking technique to solve the board, and will show us visually how that process happens.
 
 The main features of the app are done, but a few more changes will be made later in order to improve the User Experience.
-
-View app at: https://raaghavaadithya.github.io/sudoku-solver/
