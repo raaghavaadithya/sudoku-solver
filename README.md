@@ -14,4 +14,4 @@ This is an app that lets us play the classic game Sudoku, but can also solve it 
 * At any given time, we can click the "Solve" button to automatically solve the entire board.
 * The app uses the Backtracking technique to solve the board, and will show us visually how that process happens.
 
-The main features of the app are done, but a few more changes will be made later in order to improve the User Experience.
+The project is now completed.
