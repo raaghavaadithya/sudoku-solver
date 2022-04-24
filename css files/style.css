@@ -21,9 +21,9 @@ header {
   padding-bottom: 10px;
 }
 
-body.dark {
-  background: #333333;
-  color: white;
+body {
+  background: white;
+  color: black;
 }
 
 a {
@@ -85,8 +85,9 @@ button {
   width: 520px;
   height: 520px;
 }
+
 .tile {
-  background-color: rgb(85, 83, 83);
+  background-color: rgb(210, 206, 206);
   width: 50px;
   height: 50px;
   border: 2px solid black;
@@ -94,6 +95,11 @@ button {
   text-align: center;
   font-size: 30pt;
   border-radius: 10%;
+  transition: transform 0.1s;
+}
+
+.tile:hover {
+  transform: scale(0.95);
 }
 
 .right-border {
@@ -105,19 +111,25 @@ button {
 }
 
 .selected {
-  background-color: #111;
+  background-color: rgb(97, 95, 95);
+  color: white;
 }
 
 .incorrect-number {
-  color: red;
+  color: white;
+  background-color: red;
 }
 
 .correct {
-  border-color: rgb(0, 255, 0);
+  /* background-color: rgb(0, 191, 0);
+  color: white; */
+  color: rgb(2, 153, 2);
 }
 
 .wrong {
-  border-color: red;
+  /* background-color: red;
+  color: white; */
+  color: red;
 }
 
 #slider-container {
@@ -127,9 +139,93 @@ button {
 }
 
 #slider {
-  width: 300px;
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 300px; /* Full-width */
+  height: 10px; /* Specified height */
+  background: #d3d3d3; /* Grey background */
+  outline: none; /* Remove outline */
+  border-radius: 5px;
+}
+
+#slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #34cdef;
+  cursor: pointer; /* Cursor on hover */
+  border-radius: 50%
 }
 
 a {
   text-decoration: none;
+}
+
+.tutorial {
+  position: absolute;
+  width: 700px;
+  height: 600px;
+  background-color: lightblue;
+  border: 2px solid black;
+  border-radius: 4px;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  bottom: 30px;
+  text-align: center;
+}
+
+.tut-title {
+  color: #191970;
+}
+
+.tut-sub {
+  font-family: "Lato", "Verdana";
+  font-size: 15pt;
+  font-weight: bold;
+}
+
+.tut-desc {
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20%;
+}
+
+.skip-tutorial, .previous-button, .next-button {
+  position: absolute;
+  width: 100px;
+  height: 30px;
+  border: 2px solid black;
+  border-radius: 4px;
+  bottom: 5px;
+  font-family: monospace;
+  font-size: 15px;
+  background-color: lavender;
+  line-height: 30px;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.skip-tutorial:hover, .previous-button:hover, .next-button:hover {
+  background-color: #2d2d5b;
+  color: white;
+}
+
+.skip-tutorial:active, .previous-button:active, .next-button:active {
+  background-color: rgb(135, 135, 201);
+}
+
+.skip-tutorial {
+  left: 5px;
+}
+
+.next-button {
+  right: 5px;
+}
+
+.previous-button {
+  right: 111px;
 }

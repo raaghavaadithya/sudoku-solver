@@ -1,31 +1,70 @@
+//import { savedBoards } from "./PreSavedBoards.js";
 /*----------Variables----------*/
+
 let selected_tile = null;
 let selected_num = null;
 let solutionBoard = null;
 let mode = "input";
 let backtrackingSteps = null;
+let tutorial_counter = 1;
 const numbers = new Set(["1", "2", "3", "4", "5", "6", "7", "8", "9"]);
 
 window.onload = function () {
-  window.addEventListener(
-    "keydown",
-    function (e) {
-      if (
-        ["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(
-          e.code
-        ) > -1
-      ) {
-        e.preventDefault();
-      }
-    },
-    false
-  );
+  window.addEventListener("keydown", function (e) {
+    if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
+      e.preventDefault();
+    }
+  });
 
-  //On loading the window, a new grid is generated, the buttons and the numbers get functionality
-  generateCleanBoard();
-  getbyID("new-game").addEventListener("click", generateCleanBoard); // Add functionality to the button
-  AddNumbersFunctionality();
+  document.querySelector(".skip-tutorial").addEventListener("click", () => {
+    document.querySelector(".tutorial").classList.add("hidden");
+    generateRandomSavedBoard();
+    DoneClicked();
+    getbyID("new-game").addEventListener("click", generateCleanBoard); // Add functionality to the button
+    document.querySelector("#new-board").addEventListener("click", () => {
+      generateRandomSavedBoard();
+      DoneClicked();
+    });
+    AddNumbersFunctionality();
+  });
+
+  document.querySelector(".next-button").addEventListener("click", nextButton);
+  document.querySelector(".previous-button").addEventListener("click", prevButton);
+  EnableArrowKeyMovement();
 };
+
+function generateRandomSavedBoard() {
+  cleanPrevBoard(); //first wipe out the previous board
+  getbyID("slider-container").classList.add("hidden");
+  getbyID("slider").classList.add("hidden");
+  solutionBoard = null;
+  let boardIdx = Math.floor(Math.random() * 10);
+  let curBoard = savedBoards[boardIdx];
+
+  for (let i = 0; i < 81; i++) {
+    //Create new empty tiles and add them to the board
+    let temp = document.createElement("p");
+    temp.classList.add("tile");
+    temp.id = i;
+    temp.textContent = curBoard[Math.floor(i / 9)][i % 9] === 0 ? " " : curBoard[Math.floor(i / 9)][i % 9] + "";
+
+    if ((i >= 18 && i <= 26) || (i >= 45 && i <= 53))
+      //Adding the extra bottom border every 3rd row
+      temp.classList.add("bottom-border");
+
+    if ((i + 1) % 3 === 0 && (i + 1) % 9 !== 0)
+      //Adding extra right border every 3rd column
+      temp.classList.add("right-border");
+
+    getbyID("board").appendChild(temp);
+  }
+
+  AddTilesFunctionality(); //enable the tiles on the board
+  EnableKeyboardInput();
+  getbyID("done").addEventListener("click", DoneClicked);
+  getbyID("solve").classList.add("hidden");
+  getbyID("done").classList.remove("hidden");
+}
 
 function generateCleanBoard() {
   cleanPrevBoard(); //first wipe out the previous board
@@ -56,7 +95,6 @@ function generateCleanBoard() {
 
   AddTilesFunctionality(); //enable the tiles on the board
   EnableKeyboardInput();
-  EnableArrowKeyMovement();
   getbyID("done").addEventListener("click", DoneClicked);
   getbyID("solve").classList.add("hidden");
   getbyID("done").classList.remove("hidden");
@@ -102,8 +140,9 @@ function AddTilesFunctionality() {
 
 function EnableKeyboardInput() {
   document.addEventListener("keydown", function (event) {
-    if (selected_tile) {
-      if (numbers.has(event.key)) {
+    if (numbers.has(event.key) && selected_tile) {
+      // let temp = selected_tile;
+      if (!selected_tile.classList.contains("disabled")) {
         selected_tile.textContent = event.key;
       }
       if (mode === "solve") {
@@ -118,8 +157,7 @@ function EnableKeyboardInput() {
           }, 500);
         } else {
           selected_tile.removeEventListener("click", handleTileClick);
-          selected_tile.classList.remove("selected");
-          selected_tile = null;
+          selected_tile.classList.add("disabled");
         }
       }
     }
@@ -141,6 +179,7 @@ function EnableArrowKeyMovement() {
             selected_tile = getbyID(tile_id + 1);
           }
           break;
+
         case "ArrowLeft":
           selected_tile.classList.remove("selected");
           if (tile_id % 9 === 0) {
@@ -151,6 +190,7 @@ function EnableArrowKeyMovement() {
             selected_tile = getbyID(tile_id - 1);
           }
           break;
+
         case "ArrowUp":
           selected_tile.classList.remove("selected");
           if (tile_id <= 8 && tile_id >= 0) {
@@ -161,6 +201,7 @@ function EnableArrowKeyMovement() {
             selected_tile = getbyID(tile_id - 9);
           }
           break;
+
         case "ArrowDown":
           selected_tile.classList.remove("selected");
           if (tile_id >= 72 && tile_id <= 80) {
@@ -171,6 +212,7 @@ function EnableArrowKeyMovement() {
             selected_tile = getbyID(tile_id + 9);
           }
           break;
+
         default:
           break;
       }
@@ -184,14 +226,14 @@ function updateMove() {
   if (selected_num && selected_tile) {
     let newText = selected_num.textContent;
     if (newText != "clear") selected_tile.textContent = newText;
-    else selected_tile.textContent = " ";
+    else if (mode != "solve") selected_tile.textContent = " ";
 
     setTimeout(function () {
       selected_num.classList.remove("selected");
       selected_num = null;
     }, 200);
 
-    if (mode === "solve") {
+    if (mode === "solve" && newText != "clear") {
       let row = Math.floor(selected_tile.id / 9);
       let col = selected_tile.id % 9;
 
@@ -259,6 +301,7 @@ function ChangeModes() {
     //Remove clickability from all the correct tiles
     if (tiles[i].textContent != " ") {
       tiles[i].removeEventListener("click", handleTileClick);
+      tiles[i].classList.add("disabled");
     }
   }
 }
@@ -449,6 +492,95 @@ function resetBorders() {
     if (actual_board[i].classList.contains("correct")) {
       actual_board[i].classList.remove("correct");
     }
+  }
+}
+
+function nextButton() {
+  switch (tutorial_counter) {
+    case 1:
+      tutorial_counter++;
+      document.querySelector(".tut-title").textContent = "What is Sudoku?";
+      document.querySelector(".tut-sub").textContent = "";
+      document.querySelector(".tut-desc").innerHTML =
+        "Sudoku is a board game where the objective is to fill a 9x9 grid with digits so that each column, each row, and each of the nine 3x3 subgrids that compose the grid contain all of the digits from 1 to 9.<br><br>Each row and column must contain every digit from 1 to 9 <b>only once</b>.";
+      break;
+
+    case 2:
+      tutorial_counter++;
+      document.querySelector(".tut-title").textContent = "What is this app?";
+      document.querySelector(".tut-sub").textContent = "";
+      document.querySelector(".tut-desc").innerHTML =
+        'You start off with a partially solved board. Your goal is to fill the board with the appropriate numbers.<br><br>You can also select an empty board by clicking on "Reset Board", and enter your own puzzle.';
+      break;
+
+    case 3:
+      tutorial_counter++;
+      document.querySelector(".tut-title").textContent = "Solving";
+      document.querySelector(".tut-sub").innerHTML = "";
+      document.querySelector(".tut-desc").textContent = "Enter numbers using your keyboard or the number pad provided. You can move around with the arrow keys";
+      break;
+
+    case 4:
+      tutorial_counter++;
+      document.querySelector(".next-button").textContent = "Finish";
+      document.querySelector(".tut-title").textContent = "Backtracking!";
+      document.querySelector(".tut-sub").innerHTML = "Visualize how the app solves the board";
+      document.querySelector(".tut-desc").innerHTML =
+        'The unique feature of this app is that it lets you visualize the algorithm used to solve the board.<br><br>This app uses an algorithm called <b>Backtracking</b> to solve the board.<br><br>To visualize the algorithm at anytime, click "Solve".<br>You can also control the speed of the animation.<br><br>More about backtracking <a href="https://en.wikipedia.org/wiki/Backtracking" target="_blank">here</a>.';
+      break;
+
+    case 5:
+      document.querySelector(".tutorial").classList.add("hidden");
+      generateRandomSavedBoard();
+      DoneClicked();
+      getbyID("new-game").addEventListener("click", generateCleanBoard); // Add functionality to the button
+      document.querySelector("#new-board").addEventListener("click", () => {
+        generateRandomSavedBoard();
+        DoneClicked();
+      });
+      AddNumbersFunctionality();
+      break;
+
+    default:
+      break;
+  }
+}
+
+function prevButton() {
+  switch (tutorial_counter) {
+    case 2:
+      tutorial_counter--;
+      document.querySelector(".tut-title").textContent = "Welcome!";
+      document.querySelector(".tut-sub").textContent = "This is a tutorial to show you how to use this app";
+      document.querySelector(".tut-desc").textContent = 'To skip this tutorial, click on the "Skip" button, otherwise click "Next"';
+      break;
+
+    case 3:
+      tutorial_counter--;
+      document.querySelector(".tut-title").textContent = "What is Sudoku?";
+      document.querySelector(".tut-sub").textContent = "";
+      document.querySelector(".tut-desc").innerHTML =
+        "Sudoku is a board game where the objective is to fill a 9x9 grid with digits so that each column, each row, and each of the nine 3x3 subgrids that compose the grid contain all of the digits from 1 to 9.<br><br>Each row and column must contain every digit from 1 to 9 <b>only once</b>.";
+      break;
+
+    case 4:
+      tutorial_counter--;
+      document.querySelector(".tut-title").textContent = "What is this app?";
+      document.querySelector(".tut-sub").textContent = "";
+      document.querySelector(".tut-desc").innerHTML =
+        'You start off with a partially solved board. Your goal is to fill the board with the appropriate numbers.<br><br>You can also select an empty board by clicking on "Reset Board", and enter your own puzzle.';
+      break;
+
+    case 5:
+      tutorial_counter--;
+      document.querySelector(".next-button").textContent = "Next";
+      document.querySelector(".tut-title").textContent = "Solving";
+      document.querySelector(".tut-sub").innerHTML = "";
+      document.querySelector(".tut-desc").textContent = "Enter numbers using your keyboard or the number pad provided. You can move around with the arrow keys";
+      break;
+
+    default:
+      break;
   }
 }
 

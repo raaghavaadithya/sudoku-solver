@@ -10,7 +10,8 @@
 
   <header>
     <h1>Sudoku Solver</h1>
-    <button id="new-game">New Board</button>
+    <button id="new-game">Reset Board</button>
+    <button id="new-board">New Game</button>
     <button id="done">Done</button>
     <button id="solve" class="hidden">Solve</button>
     <div id="slider-container" class="hidden">Speed</div>
@@ -24,8 +25,16 @@
     />
   </header>
 
-  <body class="dark">
+  <body>
     <div id="game">
+      <div class="tutorial" >
+        <h1 class="tut-title">Welcome!</h1>
+        <h2 class="tut-sub">This is a tutorial to show you how to use this app</h2>
+        <p class="tut-desc">To skip this tutorial, click on the "Skip" button, otherwise click "Next"</p>
+        <div class="skip-tutorial">Skip</div>
+        <div class="previous-button">Previous</div>
+        <div class="next-button">Next</div>
+      </div>
       <div id="board"></div>
 
       <div id="numbers">
@@ -57,9 +66,8 @@
       ref="norefferer noopener"
       >  Repository Link.
     </a>
-    
-    <a href="instructions.html" target="_blank">  How to play</a>
   </footer>
 
+  <script src="PreSavedBoards.js"></script>
   <script src="index.js"></script>
 </html>
