@@ -499,28 +499,13 @@ function nextButton() {
   switch (tutorial_counter) {
     case 1:
       tutorial_counter++;
-      document.querySelector(".tut-title").textContent = "What is Sudoku?";
-      document.querySelector(".tut-sub").textContent = "";
-      document.querySelector(".tut-desc").innerHTML =
-        "Sudoku is a board game where the objective is to fill a 9x9 grid with digits so that each column, each row, and each of the nine 3x3 subgrids that compose the grid contain all of the digits from 1 to 9.<br><br>Each row and column must contain every digit from 1 to 9 <b>only once</b>.";
-      break;
-
-    case 2:
-      tutorial_counter++;
       document.querySelector(".tut-title").textContent = "What is this app?";
       document.querySelector(".tut-sub").textContent = "";
       document.querySelector(".tut-desc").innerHTML =
         'You start off with a partially solved board. Your goal is to fill the board with the appropriate numbers.<br><br>You can also select an empty board by clicking on "Reset Board", and enter your own puzzle.';
       break;
 
-    case 3:
-      tutorial_counter++;
-      document.querySelector(".tut-title").textContent = "Solving";
-      document.querySelector(".tut-sub").innerHTML = "";
-      document.querySelector(".tut-desc").textContent = "Enter numbers using your keyboard or the number pad provided. You can move around with the arrow keys";
-      break;
-
-    case 4:
+    case 2:
       tutorial_counter++;
       document.querySelector(".next-button").textContent = "Finish";
       document.querySelector(".tut-title").textContent = "Backtracking!";
@@ -529,7 +514,7 @@ function nextButton() {
         'The unique feature of this app is that it lets you visualize the algorithm used to solve the board.<br><br>This app uses an algorithm called <b>Backtracking</b> to solve the board.<br><br>To visualize the algorithm at anytime, click "Solve".<br>You can also control the speed of the animation.<br><br>More about backtracking <a href="https://en.wikipedia.org/wiki/Backtracking" target="_blank">here</a>.';
       break;
 
-    case 5:
+    case 3:
       document.querySelector(".tutorial").classList.add("hidden");
       generateRandomSavedBoard();
       DoneClicked();
@@ -557,26 +542,11 @@ function prevButton() {
 
     case 3:
       tutorial_counter--;
-      document.querySelector(".tut-title").textContent = "What is Sudoku?";
-      document.querySelector(".tut-sub").textContent = "";
-      document.querySelector(".tut-desc").innerHTML =
-        "Sudoku is a board game where the objective is to fill a 9x9 grid with digits so that each column, each row, and each of the nine 3x3 subgrids that compose the grid contain all of the digits from 1 to 9.<br><br>Each row and column must contain every digit from 1 to 9 <b>only once</b>.";
-      break;
-
-    case 4:
-      tutorial_counter--;
+      document.querySelector(".next-button").textContent = "Next";
       document.querySelector(".tut-title").textContent = "What is this app?";
       document.querySelector(".tut-sub").textContent = "";
       document.querySelector(".tut-desc").innerHTML =
         'You start off with a partially solved board. Your goal is to fill the board with the appropriate numbers.<br><br>You can also select an empty board by clicking on "Reset Board", and enter your own puzzle.';
-      break;
-
-    case 5:
-      tutorial_counter--;
-      document.querySelector(".next-button").textContent = "Next";
-      document.querySelector(".tut-title").textContent = "Solving";
-      document.querySelector(".tut-sub").innerHTML = "";
-      document.querySelector(".tut-desc").textContent = "Enter numbers using your keyboard or the number pad provided. You can move around with the arrow keys";
       break;
 
     default:
