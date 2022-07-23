@@ -1,4 +1,3 @@
-//import { savedBoards } from "./PreSavedBoards.js";
 /*----------Variables----------*/
 
 let selected_tile = null;
@@ -224,6 +223,15 @@ function updateMove() {
   //If both a tile and a number are selected at once, the tile gets updated with the new number
   //Depending on whether its input mode or solve mode, the updation happens
   if (selected_num && selected_tile) {
+    
+    if(selected_tile.classList.contains("disabled")) {
+      setTimeout(function () {
+        selected_num.classList.remove("selected");
+        selected_num = null;
+      }, 200);
+      return;
+    }
+
     let newText = selected_num.textContent;
     if (newText != "clear") selected_tile.textContent = newText;
     else if (mode != "solve") selected_tile.textContent = " ";
@@ -299,7 +307,7 @@ function ChangeModes() {
   let tiles = qsa(".tile");
   for (let i = 0; i < 81; i++) {
     //Remove clickability from all the correct tiles
-    if (tiles[i].textContent != " ") {
+    if (tiles[i].textContent !== " ") {
       tiles[i].removeEventListener("click", handleTileClick);
       tiles[i].classList.add("disabled");
     }
